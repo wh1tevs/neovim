@@ -1,6 +1,11 @@
-require("which-key").setup({
+local wk = require("which-key")
+
+wk.setup({
 	preset = "helix",
 	show_help = false,
+	win = {
+		border = "single",
+	},
 	icons = {
 		breadcrumb = "",
 		separator = "",
@@ -39,4 +44,13 @@ require("which-key").setup({
 			F12 = "F12",
 		},
 	},
+})
+
+wk.add({
+	{ "g", group = "Global" },
+	{ "<c-w>", group = "Window" },
+	{ "<leader>", group = "Space" },
+	{ "<leader>g", group = "Goto" },
+	{ "[", group = "Left bracket" },
+	{ "]", group = "Right bracket" },
 })

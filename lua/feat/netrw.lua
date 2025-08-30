@@ -10,6 +10,7 @@ vim.keymap.set({ "n" }, "<leader>E", vim.cmd.Explore, {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+	desc = "Configure netrw",
 	pattern = "netrw",
 	callback = function()
 		vim.g.netrw_banner = 0
@@ -19,8 +20,8 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.g.netrw_altv = 1
 		vim.g.netrw_winsize = 20
 		vim.g.netrw_hide = 1
-
 		vim.g.netrw_list_hide = "\\(^\\|\\s\\s\\)\\zs\\.\\S\\+," .. vim.fn.call("netrw_gitignore#Hide()", {})
+
 		local opts = { remap = true, buffer = true, silent = true }
 
 		vim.keymap.set("n", "l", "<cr>", opts)

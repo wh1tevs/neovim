@@ -1,5 +1,8 @@
 vim.diagnostic.config({
-	float = true,
+	float = {
+		header = "",
+		border = "solid",
+	},
 	jump = {
 		float = true,
 		wrap = true,
@@ -19,6 +22,7 @@ vim.keymap.del("n", "gri") -- implementation
 vim.keymap.del("n", "grn") -- rename
 vim.keymap.del("n", "grt") -- type_definition
 vim.keymap.del("n", "<c-w>d") -- show diag under cursor
+vim.keymap.del("n", "<c-w><c-d>") -- show diag under cursor
 
 vim.lsp.config("lua_ls", {
 	on_init = function(client)
@@ -72,58 +76,73 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				client.server_capabilities.semanticTokensProvider.full = false
 			end
 
+			if is_supported("textDocument/diagnostic") then
+				vim.keymap.set("n", "<c-w>d", vim.diagnostic.open_float, {
+					desc = "Show diagnostics under the cursor",
+				})
+			end
+
 			if is_supported("textDocument/definition") then
-				vim.keymap.set({ "n", "x" }, "<leader>gd", vim.lsp.buf.definition, { desc = "Goto definition" })
+				vim.keymap.set({ "n", "x" }, "<leader>gd", vim.lsp.buf.definition, {
+					desc = "Goto definition",
+				})
 			end
 
 			if is_supported("textDocument/declaration") then
-				vim.keymap.set({ "n", "x" }, "<leader>gD", vim.lsp.buf.declaration, { desc = "Goto declaration" })
+				vim.keymap.set({ "n", "x" }, "<leader>gD", vim.lsp.buf.declaration, {
+					desc = "Goto declaration",
+				})
 			end
 
 			if is_supported("textDocument/implementation") then
-				vim.keymap.set({ "n", "x" }, "<leader>gi", vim.lsp.buf.implementation, { desc = "Goto implementation" })
+				vim.keymap.set({ "n", "x" }, "<leader>gi", vim.lsp.buf.implementation, {
+					desc = "Goto implementation",
+				})
 			end
 
 			if is_supported("textDocument/references") then
-				vim.keymap.set({ "n", "x" }, "<leader>gr", vim.lsp.buf.references, { desc = "Goto references" })
+				vim.keymap.set({ "n", "x" }, "<leader>gr", vim.lsp.buf.references, {
+					desc = "Goto references",
+				})
 			end
 
 			if is_supported("textDocument/typeDefinition") then
-				vim.keymap.set({ "n", "x" }, "<leader>gy", vim.lsp.buf.type_definition, { desc = "Goto type definition" })
+				vim.keymap.set({ "n", "x" }, "<leader>gy", vim.lsp.buf.type_definition, {
+					desc = "Goto type definition",
+				})
 			end
 			--
-			-- if is_supported("textDocument/documentSymbol") then
-			-- 	local picker = require("picker")
-			-- 	vim.keymap.set(
-			-- 		{ "n", "x" },
-			-- 		"<leader>s",
-			-- 		picker.fcall("lsp_document_symbols"),
-			-- 		{ desc = "Open symbol picker" }
-			-- 	)
-			-- end
-			--
-			-- if is_supported("workspace/symbol") then
-			-- 	local picker = require("picker")
-			-- 	vim.keymap.set(
-			-- 		{ "n", "x" },
-			-- 		"<leader>s",
-			-- 		picker.fcall("lsp_workspace_symbols"),
-			-- 		{ desc = "Open workspace symbol picker" }
-			-- 	)
-			-- end
+			if is_supported("textDocument/documentSymbol") then
+				vim.keymap.set({ "n", "x" }, "<leader>s", vim.lsp.buf.document_symbol, { desc = "Open symbol picker" })
+			end
+
+			if is_supported("workspace/symbol") then
+				vim.keymap.set(
+					{ "n", "x" },
+					"<leader>S",
+					vim.lsp.buf.workspace_symbol,
+					{ desc = "Open workspace symbol picker" }
+				)
+			end
 
 			if is_supported("textDocument/hover") then
 				vim.keymap.set({ "n", "x" }, "<leader>k", function()
 					vim.lsp.buf.hover({ border = "solid" })
-				end, { desc = "Show docs for item under cursor" })
+				end, {
+					desc = "Show docs for item under cursor",
+				})
 			end
 
 			if is_supported("textDocument/codeAction") then
-				vim.keymap.set({ "n", "x" }, "<leader>a", vim.lsp.buf.code_action, { desc = "Perform code action" })
+				vim.keymap.set({ "n", "x" }, "<leader>a", vim.lsp.buf.code_action, {
+					desc = "Perform code action",
+				})
 			end
 
 			if is_supported("textDocument/rename") then
-				vim.keymap.set({ "n", "x" }, "<leader>r", vim.lsp.buf.rename, { desc = "Rename symbol" })
+				vim.keymap.set({ "n", "x" }, "<leader>r", vim.lsp.buf.rename, {
+					desc = "Rename symbol",
+				})
 			end
 		end
 	end,
