@@ -1,3 +1,4 @@
+--options {{{
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.have_nerd_font = false
@@ -46,7 +47,11 @@ vim.opt.showmode = true
 vim.opt.signcolumn = "yes"
 vim.opt.statuscolumn = "%-2(%s%)%3(%l%)%#SignColumn#%1(%)"
 
---keymaps
+vim.opt.foldmethod = "expr"
+vim.opt.foldlevel = 99
+--}}}
+
+--keymaps {{{
 vim.keymap.set("n", "<esc>", ":nohl<cr><esc>", { silent = true })
 vim.keymap.set("n", "<c-d>", "<c-d>zz")
 vim.keymap.set("n", "<c-u>", "<c-u>zz")
@@ -103,10 +108,11 @@ vim.keymap.set("n", "]l", vim.cmd.lnext, {
 vim.keymap.set("n", "]L", vim.cmd.llast, {
 	desc = "Goto last loclist item",
 })
+--}}}
 
 require("feat.netrw")
 
---plugin manager
+--plugins {{{
 local install_path = vim.fn.stdpath("data") .. "/site/pack/deps/start/mini.deps"
 local repo = "https://github.com/echasnovski/mini.nvim"
 
@@ -200,3 +206,18 @@ add({ source = "folke/which-key.nvim" })
 later(function()
 	require("feat.which-key")
 end)
+--}}}
+
+--autocommands {{{
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	desc = "Config options",
+	pattern = vim.fn.expand("~") .. "/.config/nvim/*",
+	callback = function()
+		vim.opt_local.foldmethod = "marker"
+		vim.opt_local.foldmarker = "{{{,}}}"
+		vim.opt_local.foldlevel = 99
+	end,
+})
+--}}}
+
+-- vim: fdl=0
