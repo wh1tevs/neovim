@@ -110,6 +110,8 @@ vim.keymap.set("n", "]L", vim.cmd.llast, {
 })
 --}}}
 
+vim.cmd.colorscheme("monokai-pro-ristretto")
+
 require("feat.netrw")
 
 --plugins {{{
@@ -127,26 +129,6 @@ require("mini.deps").setup()
 
 ---@diagnostic disable-next-line: undefined-global
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
-
---colorscheme
-add({ source = "loctvl842/monokai-pro.nvim" })
-
-now(function()
-	require("monokai-pro").setup({
-		filter = "ristretto",
-		override = function(c)
-			return {
-				Directory = { link = "Normal" },
-				BlinkCmpScrollBarThumb = { bg = c.base.white },
-				BlinkCmpScrollBarGutter = { link = "BlinkCmpMenu" },
-				BlinkCmpMenuSelection = { bg = c.base.yellow, fg = c.base.black },
-				BlinkCmpLabel = { fg = c.base.white },
-				BlinkCmpKind = { fg = c.base.white },
-			}
-		end,
-	})
-	vim.cmd.colorscheme("monokai-pro")
-end)
 
 --treesitter
 add({ source = "nvim-treesitter/nvim-treesitter", checkout = "main" })
