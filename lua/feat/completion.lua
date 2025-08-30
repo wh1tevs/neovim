@@ -11,9 +11,15 @@ require("blink.cmp").setup({
 						text = function(ctx)
 							return ctx.kind:lower()
 						end,
-						highlight = "BlinkCmpKind",
 					},
 				},
+			},
+		},
+		documentation = {
+			auto_show = true,
+			window = {
+				border = "none",
+				scrollbar = false,
 			},
 		},
 	},
