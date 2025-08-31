@@ -110,7 +110,7 @@ vim.keymap.set("n", "]L", vim.cmd.llast, {
 })
 --}}}
 
--- vim.cmd.colorscheme("monokai-pro-ristretto")
+vim.cmd.colorscheme("monokai-pro-ristretto")
 
 require("feat.netrw")
 
@@ -130,17 +130,11 @@ require("mini.deps").setup()
 ---@diagnostic disable-next-line: undefined-global
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
-add({ source = "loctvl842/monokai-pro.nvim" })
-
-now(function()
-	require("feat.colorscheme")
-end)
-
 --treesitter
 add({ source = "nvim-treesitter/nvim-treesitter", checkout = "main" })
 add({ source = "nvim-treesitter/nvim-treesitter-textobjects", checkout = "main" })
 
-now(function()
+later(function()
 	require("feat.treesitter")
 end)
 
@@ -149,7 +143,7 @@ add({ source = "mason-org/mason.nvim" })
 add({ source = "mason-org/mason-lspconfig.nvim" })
 add({ source = "neovim/nvim-lspconfig" })
 
-now(function()
+later(function()
 	require("mason").setup()
 	require("mason-lspconfig").setup()
 	require("feat.lsp")
@@ -194,12 +188,6 @@ add({ source = "folke/which-key.nvim" })
 later(function()
 	require("feat.which-key")
 end)
-
-later(function()
-	add({ source = "brenoprata10/nvim-highlight-colors" })
-
-	require("nvim-highlight-colors").setup()
-end)
 --}}}
 
 --autocommands {{{
@@ -208,6 +196,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = vim.fn.expand("~") .. "/.config/nvim/*",
 	callback = function()
 		vim.opt_local.foldmethod = "marker"
+		vim.opt_local.foldmarker = "{{{,}}}"
 		vim.opt_local.foldlevel = 99
 	end,
 })

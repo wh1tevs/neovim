@@ -11,6 +11,7 @@ require("blink.cmp").setup({
 						text = function(ctx)
 							return ctx.kind:lower()
 						end,
+						highlight = "BlinkCmpKind",
 					},
 				},
 			},
@@ -18,7 +19,7 @@ require("blink.cmp").setup({
 		documentation = {
 			auto_show = true,
 			window = {
-				border = "none",
+				border = "solid",
 				scrollbar = false,
 			},
 		},

@@ -48,6 +48,7 @@ wk.setup({
 
 wk.add({
 	{ "g", group = "Global" },
+	{ "z", group = "View" },
 	{ "<c-w>", group = "Window" },
 	{ "<leader>", group = "Space" },
 	{ "<leader>g", group = "Goto" },
