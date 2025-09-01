@@ -1,6 +1,4 @@
 --options {{{
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
 vim.g.have_nerd_font = false
 
 vim.opt.termsync = true
@@ -49,9 +47,15 @@ vim.opt.statuscolumn = "%-2(%s%)%3(%l%)%#SignColumn#%1(%)"
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldlevel = 99
+
+vim.opt.wildoptions:append("fuzzy")
+vim.opt.wildmode = { "list:full", "noselect" }
 --}}}
 
---keymaps {{{
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+-- keymaps {{{
 vim.keymap.set("n", "<esc>", ":nohl<cr><esc>", { silent = true })
 vim.keymap.set("n", "<c-d>", "<c-d>zz")
 vim.keymap.set("n", "<c-u>", "<c-u>zz")
@@ -75,142 +79,27 @@ vim.keymap.set("n", "<leader>d", vim.diagnostic.setloclist, {
 vim.keymap.set("n", "<leader>D", vim.diagnostic.setqflist, {
 	desc = "Open workspace diagnostic",
 })
-vim.keymap.set("n", "]b", vim.cmd.bnext, {
-	desc = "Goto next buffer",
-})
-vim.keymap.set("n", "]B", vim.cmd.blast, {
-	desc = "Goto last buffer",
-})
-vim.keymap.set("n", "[B", vim.cmd.bfirst, {
-	desc = "Goto first buffer",
-})
-vim.keymap.set("n", "[q", vim.cmd.cprev, {
-	desc = "Goto next quickfix item",
-})
-vim.keymap.set("n", "[Q", vim.cmd.cfirst, {
-	desc = "Goto last quickfix item",
-})
-vim.keymap.set("n", "]q", vim.cmd.cnext, {
-	desc = "Goto next quickfix item",
-})
-vim.keymap.set("n", "]Q", vim.cmd.clast, {
-	desc = "Goto last quickfix item",
-})
-vim.keymap.set("n", "[l", vim.cmd.lprev, {
-	desc = "Goto next loclist item",
-})
-vim.keymap.set("n", "[L", vim.cmd.lfirst, {
-	desc = "Goto last loclist item",
-})
-vim.keymap.set("n", "]l", vim.cmd.lnext, {
-	desc = "Goto next loclist item",
-})
-vim.keymap.set("n", "]L", vim.cmd.llast, {
-	desc = "Goto last loclist item",
-})
---}}}
 
--- vim.cmd.colorscheme("monokai-pro-ristretto")
+-- lsp
+vim.keymap.set("n", "K", function()
+	vim.lsp.buf.hover({
+		border = "solid",
+		title = "",
+	})
+end)
+vim.keymap.set("n", "<c-w>d", function()
+	vim.diagnostic.open_float({
+		border = "solid",
+		title = "",
+	})
+end)
+-- }}}
 
 require("feat.netrw")
+require("feat.lsp")
+require("feat.treesitter")
+require("feat.editor")
+require("feat.telescope")
+require("feat.colorscheme")
 
---plugins {{{
-local install_path = vim.fn.stdpath("data") .. "/site/pack/deps/start/mini.deps"
-local repo = "https://github.com/echasnovski/mini.nvim"
-
-if not vim.uv.fs_stat(install_path) then
-	vim.notify("Installing plugin manager", vim.log.levels.INFO)
-	vim.fn.system({ "git", "clone", "--filter=blob:none", repo, install_path })
-	vim.cmd.packadd("mini.deps")
-	vim.notify("Package manager installed", vim.log.levels.INFO)
-end
-
-require("mini.deps").setup()
-
----@diagnostic disable-next-line: undefined-global
-local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
-
-add({ source = "loctvl842/monokai-pro.nvim" })
-
-now(function()
-	require("feat.colorscheme")
-end)
-
---treesitter
-add({ source = "nvim-treesitter/nvim-treesitter", checkout = "main" })
-add({ source = "nvim-treesitter/nvim-treesitter-textobjects", checkout = "main" })
-
-now(function()
-	require("feat.treesitter")
-end)
-
---lsp
-add({ source = "mason-org/mason.nvim" })
-add({ source = "mason-org/mason-lspconfig.nvim" })
-add({ source = "neovim/nvim-lspconfig" })
-
-now(function()
-	require("mason").setup()
-	require("mason-lspconfig").setup()
-	require("feat.lsp")
-end)
-
---telescope
-add({ source = "nvim-telescope/telescope.nvim" })
-add({ source = "nvim-lua/plenary.nvim" })
-
-later(function()
-	require("feat.telescope")
-end)
-
---editing stuff
-add({ source = "echasnovski/mini.pairs", checkout = "stable" })
-add({ source = "echasnovski/mini.surround", checkout = "stable" })
-add({ source = "echasnovski/mini.jump", checkout = "stable" })
-add({ source = "saghen/blink.cmp", checkout = "v1.6.0" })
-
-later(function()
-	require("mini.pairs").setup({
-		modes = { insert = true, command = true },
-	})
-	require("mini.surround").setup({
-		mappings = {
-			add = "gsa",
-			delete = "gsd",
-			find = "gsf",
-			find_left = "gsF",
-			highlight = "gsh",
-			replace = "gsr",
-			update_n_lines = "gsn",
-		},
-	})
-	require("mini.jump").setup()
-	require("feat.completion")
-end)
-
---others
-add({ source = "folke/which-key.nvim" })
-
-later(function()
-	require("feat.which-key")
-end)
-
-later(function()
-	add({ source = "brenoprata10/nvim-highlight-colors" })
-
-	require("nvim-highlight-colors").setup()
-end)
---}}}
-
---autocommands {{{
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-	desc = "Config options",
-	pattern = vim.fn.expand("~") .. "/.config/nvim/*",
-	callback = function()
-		vim.opt_local.foldmethod = "marker"
-		vim.opt_local.foldlevel = 99
-	end,
-})
---}}}
-
--- vim: fdl=0
+-- vim:fdm=marker:fdl=0:

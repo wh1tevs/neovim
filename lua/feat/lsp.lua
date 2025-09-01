@@ -1,3 +1,11 @@
+vim.pack.add({ { src = "https://github.com/mason-org/mason.nvim" } })
+
+require("mason").setup({
+	ensure_installed = {
+		"lua_ls",
+	}
+})
+
 vim.diagnostic.config({
 	float = {
 		header = "",
@@ -12,164 +20,25 @@ vim.diagnostic.config({
 	underline = true,
 	update_in_insert = true,
 	virtual_lines = false,
-	virtual_text = false,
-})
-
-vim.keymap.del("n", "gO") -- document_symbol
-vim.keymap.del("n", "grr") -- references
-vim.keymap.del("n", "gra") -- code actions
-vim.keymap.del("n", "gri") -- implementation
-vim.keymap.del("n", "grn") -- rename
-vim.keymap.del("n", "grt") -- type_definition
-vim.keymap.del("n", "<c-w>d") -- show diag under cursor
-vim.keymap.del("n", "<c-w><c-d>") -- show diag under cursor
-
-vim.lsp.config("lua_ls", {
-	on_init = function(client)
-		if client.workspace_folders then
-			local path = client.workspace_folders[1].name
-			if
-				path ~= vim.fn.stdpath("config")
-				and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
-			then
-				return
-			end
-		end
-
-		client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
-			runtime = {
-				version = "LuaJIT",
-				path = {
-					"lua/?.lua",
-					"lua/?/init.lua",
-				},
-			},
-			workspace = {
-				checkThirdParty = false,
-				library = {
-					vim.env.VIMRUNTIME,
-					"${3rd}/luv/library",
-				},
-			},
-		})
-	end,
-	settings = {
-		Lua = {},
-	},
+	virtual_text = true,
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
-	desc = "LSP stuff",
-	callback = function(event)
-		local clients = vim.lsp.get_clients({ bufnr = event.buf })
+	desc = "LSP configuration and keybinds",
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-		if #clients == 0 then
-			return
+		if not client then return end
+
+		if client:supports_method("textDocument/completion", args.buf) then
+			vim.lsp.completion.enable(true, client.id, args.buf, {
+				autotrigger = true,
+				convert = function(item)
+					return {
+						abbr = item.label
+					}
+				end
+			})
 		end
-
-		for _, client in ipairs(clients) do
-			local function is_supported(method)
-				return client.supports_method(client, method, event.buf)
-			end
-
-			if client.server_capabilities.semanticTokensProvider ~= nil then
-				client.server_capabilities.semanticTokensProvider.full = false
-			end
-
-			if is_supported("textDocument/diagnostic") then
-				vim.keymap.set("n", "<c-w>d", vim.diagnostic.open_float, {
-					desc = "Show diagnostics under the cursor",
-				})
-			end
-
-			if is_supported("textDocument/definition") then
-				vim.keymap.set({ "n", "x" }, "<leader>gd", vim.lsp.buf.definition, {
-					desc = "Goto definition",
-				})
-			end
-
-			if is_supported("textDocument/declaration") then
-				vim.keymap.set({ "n", "x" }, "<leader>gD", vim.lsp.buf.declaration, {
-					desc = "Goto declaration",
-				})
-			end
-
-			if is_supported("textDocument/implementation") then
-				vim.keymap.set({ "n", "x" }, "<leader>gi", vim.lsp.buf.implementation, {
-					desc = "Goto implementation",
-				})
-			end
-
-			if is_supported("textDocument/references") then
-				vim.keymap.set({ "n", "x" }, "<leader>gr", vim.lsp.buf.references, {
-					desc = "Goto references",
-				})
-			end
-
-			if is_supported("textDocument/typeDefinition") then
-				vim.keymap.set({ "n", "x" }, "<leader>gy", vim.lsp.buf.type_definition, {
-					desc = "Goto type definition",
-				})
-			end
-			--
-			if is_supported("textDocument/documentSymbol") then
-				vim.keymap.set({ "n", "x" }, "<leader>s", vim.lsp.buf.document_symbol, { desc = "Open symbol picker" })
-			end
-
-			if is_supported("workspace/symbol") then
-				vim.keymap.set(
-					{ "n", "x" },
-					"<leader>S",
-					vim.lsp.buf.workspace_symbol,
-					{ desc = "Open workspace symbol picker" }
-				)
-			end
-
-			if is_supported("textDocument/hover") then
-				vim.keymap.set({ "n", "x" }, "<leader>k", function()
-					vim.lsp.buf.hover({ border = "solid" })
-				end, {
-					desc = "Show docs for item under cursor",
-				})
-			end
-
-			if is_supported("textDocument/codeAction") then
-				vim.keymap.set({ "n", "x" }, "<leader>a", vim.lsp.buf.code_action, {
-					desc = "Perform code action",
-				})
-			end
-
-			if is_supported("textDocument/rename") then
-				vim.keymap.set({ "n", "x" }, "<leader>r", vim.lsp.buf.rename, {
-					desc = "Rename symbol",
-				})
-			end
-		end
-	end,
-})
-
-vim.api.nvim_create_autocmd("BufReadPre", {
-	pattern = "*.vue",
-	callback = function()
-		local vue_language_server_path =
-			vim.fn.expand("$MASON/packages/vue-language-server/node_modules/@vue/language-server")
-
-		vim.lsp.config("vtsls", {
-			filetypes = vim.tbl_extend("force", vim.lsp.config.vtsls.filetypes, { "vue" }),
-			settings = {
-				vtsls = {
-					tsserver = {
-						globalPlugins = {
-							{
-								name = "@vue/typescript-plugin",
-								location = vue_language_server_path,
-								languages = { "vue" },
-								configNamespace = "typescript",
-							},
-						},
-					},
-				},
-			},
-		})
-	end,
+	end
 })
