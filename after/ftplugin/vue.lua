@@ -1,5 +1,4 @@
-local vue_language_server_path =
-	vim.fn.expand("$MASON/packages/vue-language-server/node_modules/@vue/language-server")
+local vue_language_server_path = vim.fn.expand("$MASON/packages/vue-language-server/node_modules/@vue/language-server")
 
 vim.lsp.config("vtsls", {
 	filetypes = { "vue" },
@@ -18,5 +17,3 @@ vim.lsp.config("vtsls", {
 		},
 	},
 })
-
-vim.lsp.enable({ "vue_ls", "vtsls" })

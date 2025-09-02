@@ -80,7 +80,7 @@ set_hl(0, "Substitute", { link = "Search" })
 
 -- float/menu
 set_hl(0, "NormalFloat", { bg = p.base3, foreground = p.base8, fg = p.base8 })
-set_hl(0, "FloatBorder", { bg = get_hl(0, { name = "NormalFloat"}).bg, fg = p.base7  })
+set_hl(0, "FloatBorder", { bg = get_hl(0, { name = "NormalFloat" }).bg, fg = p.base7 })
 set_hl(0, "FloatTitle", { link = "NormalFloat" })
 set_hl(0, "FloatFooter", { link = "NormalFloat" })
 set_hl(0, "Pmenu", { link = "NormalFloat" })
@@ -117,7 +117,6 @@ set_hl(0, "DiffAdd", { fg = p.green })
 set_hl(0, "DiffChange", { bg = p.base3 })
 set_hl(0, "DiffText", { bg = p.base4 })
 set_hl(0, "DiffDelete", { fg = p.red })
-
 
 -- spellong
 set_hl(0, "SpellBad", {})

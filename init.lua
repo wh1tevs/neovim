@@ -73,26 +73,6 @@ vim.keymap.set({ "n", "x" }, "<leader>p", '"+p', {
 vim.keymap.set({ "n", "x" }, "<leader>P", '"+P', {
 	desc = "Paste clipboard before cursor",
 })
-vim.keymap.set("n", "<leader>d", vim.diagnostic.setloclist, {
-	desc = "Open diagnostic",
-})
-vim.keymap.set("n", "<leader>D", vim.diagnostic.setqflist, {
-	desc = "Open workspace diagnostic",
-})
-
--- lsp
-vim.keymap.set("n", "K", function()
-	vim.lsp.buf.hover({
-		border = "solid",
-		title = "",
-	})
-end)
-vim.keymap.set("n", "<c-w>d", function()
-	vim.diagnostic.open_float({
-		border = "solid",
-		title = "",
-	})
-end)
 -- }}}
 
 require("feat.netrw")
@@ -100,6 +80,7 @@ require("feat.lsp")
 require("feat.treesitter")
 require("feat.editor")
 require("feat.telescope")
+require("feat.which-key")
 require("feat.colorscheme")
 
 -- vim:fdm=marker:fdl=0:

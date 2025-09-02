@@ -80,11 +80,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			return
 		end
 
-		local function is_supported(method)
+		---@param method vim.lsp.protocol.Method.ClientToServer
+		local function supports(method)
 			return client:supports_method(method, args.buf)
 		end
 
-		if is_supported("textDocument/diagnostic") then
+		if supports("textDocument/diagnostic") then
 			vim.keymap.set("n", "<leader>d", with(builtin.diagnostics, defaults, { bufnr = args.buf }), {
 				desc = "Open diagnostic picker",
 			})
@@ -94,30 +95,34 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			})
 		end
 
-		if is_supported("textDocument/definition") then
+		if supports("textDocument/definition") then
 			vim.keymap.set({ "n", "x" }, "<leader>gd", with(builtin.lsp_definitions, defaults), {
 				desc = "Goto definition",
 			})
 		end
 
-		if is_supported("textDocument/implementation") then
+		if supports("textDocument/implementation") then
+			-- vim.keymap.del("n", "gri")
 			vim.keymap.set({ "n", "x" }, "<leader>gi", with(builtin.lsp_impelementations, defaults), {
 				desc = "Goto implementation",
 			})
 		end
 
-		if is_supported("textDocument/references") then
+		if supports("textDocument/references") then
+			-- vim.keymap.del("n", "grr")
 			vim.keymap.set({ "n", "x" }, "<leader>gr", with(builtin.lsp_references, defaults), {
 				desc = "Goto references",
 			})
 		end
 
-		if is_supported("textDocument/typeDefinition") then
+		if supports("textDocument/typeDefinition") then
+			-- vim.keymap.del("n", "grt")
 			vim.keymap.set({ "n", "x" }, "<leader>gy", with(builtin.lsp_type_definitions, defaults), {
 				desc = "Goto type definition",
 			})
 		end
-		if is_supported("textDocument/documentSymbol") then
+
+		if supports("textDocument/documentSymbol") then
 			vim.keymap.set(
 				{ "n", "x" },
 				"<leader>s",
@@ -126,7 +131,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			)
 		end
 
-		if is_supported("workspace/symbol") then
+		if supports("workspace/symbol") then
 			vim.keymap.set(
 				{ "n", "x" },
 				"<leader>S",

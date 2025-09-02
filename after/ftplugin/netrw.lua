@@ -6,8 +6,3 @@ vim.g.netrw_altv = 1
 vim.g.netrw_winsize = 20
 vim.g.netrw_hide = 1
 vim.g.netrw_list_hide = "\\(^\\|\\s\\s\\)\\zs\\.\\S\\+," .. vim.fn.call("netrw_gitignore#Hide()", {})
-
-local opts = { remap = true, buffer = true, silent = true }
-
-vim.keymap.set("n", "l", "<cr>", opts)
-vim.keymap.set("n", "h", "-", opts)
