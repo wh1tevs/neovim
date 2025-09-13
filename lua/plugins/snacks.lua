@@ -1,9 +1,6 @@
 return {
   "snacks.nvim",
   opts = {
-    animate = { enabled = false },
-    indent = { enabled = false },
-    scope = { enabled = false },
     picker = {
       prompt = " ",
       layout = {
